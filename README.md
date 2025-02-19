@@ -33,7 +33,7 @@ To address these issues, this Python script was developed using Flask, Watchdog,
 
 ## Installation 📥
 
-### Get the Repository 📦
+### Download the Repository 📦
 
 1. **Install Git** 🐙
 
@@ -51,6 +51,14 @@ To address these issues, this Python script was developed using Flask, Watchdog,
    Move into the project folder:
     ```sh
     cd AutodartsMP3SoundboardServer
+    ```
+
+### Update the Repository 🔄
+- **Pull the Latest Changes** ⬇️
+
+    If you have already cloned the repository, you can update it with the latest changes:
+    ```sh
+    git pull
     ```
 
 ### Windows Installation 🖥️
@@ -125,6 +133,18 @@ To address these issues, this Python script was developed using Flask, Watchdog,
    ```sh
    python3 audio_mp3_server.py
    ```
+
+
+### Adding first MP3 files 🎵
+1. **Initialize Script** 🚀
+    In order to make the `audio_input` folder visible in your file explorer, you need to start the script first.
+    ```sh
+   python3 audio_mp3_server.py
+   ```
+   Stop the script with `CTRL + C` after the server is running.
+
+2. **Add MP3 files** 🎵
+    Place your MP3 files in the `audio_input` folder. The script will automatically process them and move them to the `audio_output` folder on next startup.
 
 ---
 
