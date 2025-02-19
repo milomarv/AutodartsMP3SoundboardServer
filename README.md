@@ -33,6 +33,26 @@ To address these issues, this Python script was developed using Flask, Watchdog,
 
 ## Installation 📥
 
+### Get the Repository 📦
+
+1. **Install Git** 🐙
+
+   Download and install Git from [git-scm.com](https://git-scm.com/downloads).
+
+1. **Clone the Repository** 📂
+
+   Use Git to clone the repository to your local device:
+    ```sh
+    git clone https://github.com/milomarv/AutodartsMP3SoundboardServer.git
+    ```
+
+1. **Navigate to the Directory** 📁
+
+   Move into the project folder:
+    ```sh
+    cd AutodartsMP3SoundboardServer
+    ```
+
 ### Windows Installation 🖥️
 
 1. **Install Python** 🐍
