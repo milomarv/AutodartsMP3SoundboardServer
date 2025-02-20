@@ -1,6 +1,8 @@
 # Audio input and output directories
 audio_input/
 audio_output/
+cert.pem
+key.pem
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

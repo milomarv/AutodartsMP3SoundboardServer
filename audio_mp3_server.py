@@ -157,5 +157,11 @@ watchdog_thread.start()
 
 
 if __name__ == '__main__':
-    print(f'🚀 Serving MP3 files on http://0.0.0.0:{PORT}/')
-    app.run(host='0.0.0.0', port=PORT)
+    cert_file = 'cert.pem'
+    key_file = 'key.pem'
+    if os.path.exists(cert_file) and os.path.exists(key_file):
+        print(f'🚀 Serving MP3 files on https://0.0.0.0:{PORT}/')
+        app.run(host='0.0.0.0', port=PORT, ssl_context=(cert_file, key_file))
+    else:
+        print(f'🚀 Serving MP3 files on http://0.0.0.0:{PORT}/')
+        app.run(host='0.0.0.0', port=PORT)

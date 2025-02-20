@@ -153,17 +153,58 @@ To address these issues, this Python script was developed using Flask, Watchdog,
 Once the script is running, open a browser and go to:
 
 ```
-http://<your-ip>:8080/
+http://localhost:8080/
 ```
 
-Just use the `localhost` if you are running the script on the same device you are accessing the browser.
+## Enable HTTPS for different devices in the same network 🌐
 
-To get your IP address in the local network:
+❗**Problem:** If you want to access the server from a different device in the same network, you need to replace `localhost` with the IP address of the server. However, this can cause issues with the browser blocking the connection due to security concerns.
 
-- **Windows:** 🖥️ Run `ipconfig` in Command Prompt and find `IPv4 Address`.
-- **Linux / Raspberry Pi:** 🐧 Run `hostname -I` in the terminal.
+### Get your IP address in the local network 🌐
 
-Copy the URL for any MP3 file and paste it into the AutoDarts extension to set it as a custom sound.
+   - **Windows:** 🖥️ Run `ipconfig` in Command Prompt and find `IPv4 Address`.
+   - **Linux / Raspberry Pi:** 🐧 Run `hostname -I` in the terminal.
+
+### Install OpenSSL 🛠️
+
+   - **Windows:** 🖥️ Download and install [OpenSSL](https://slproweb.com/products/Win32OpenSSL.html).
+   - **Linux / Raspberry Pi:** 🐧 Run `sudo apt install openssl`.
+   
+   Ensure `openssl` is added to the system PATH:
+   ```sh	
+   openssl version
+   ```
+
+### Generate a Self-Signed Certificate 🛡️
+
+   Run the following command to generate a self-signed certificate:
+   ```sh
+   openssl req -newkey rsa:2048 -nodes -keyout key.pem -x509 -days 365 -out cert.pem
+   ```
+
+   There will be a series of prompts to fill in. You can skip most of them by pressing `Enter`.
+
+   This will create `key.pem` and `cert.pem` files.
+
+### Start the Server with HTTPS 🚀
+
+   If `key.pem` and `cert.pem` are in the project directory, the script will automatically use HTTPS.
+   
+   ```sh
+   python audio_mp3_server.py
+   ```
+
+### Access the Server 🌐
+
+   Open a browser on the other device and go to:
+   ```
+   https://<IP_ADDRESS>:8080/
+   ```
+
+   Replace `<IP_ADDRESS>` with the IP address of the server.
+
+   You may need to accept the security warning in the browser to proceed. Just click on `Advanced` and `Proceed`.
+
 
 ---
 
