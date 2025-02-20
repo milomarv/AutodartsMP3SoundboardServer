@@ -13,6 +13,8 @@ INPUT_DIRECTORY = 'audio_input'
 OUTPUT_DIRECTORY = 'audio_output'
 PORT = 8080
 SILENCE_THRESHOLD = -50.0
+CERT_FILE = 'cert.pem'
+KEY_FILE = 'key.pem'
 
 if not os.path.exists(INPUT_DIRECTORY):
     os.makedirs(INPUT_DIRECTORY)
@@ -160,11 +162,9 @@ watchdog_thread.start()
 
 
 if __name__ == '__main__':
-    cert_file = 'cert.pem'
-    key_file = 'key.pem'
-    if os.path.exists(cert_file) and os.path.exists(key_file):
+    if os.path.exists(CERT_FILE) and os.path.exists(KEY_FILE):
         print(f'🚀 Serving MP3 files on https://0.0.0.0:{PORT}/')
-        app.run(host='0.0.0.0', port=PORT, ssl_context=(cert_file, key_file))
+        app.run(host='0.0.0.0', port=PORT, ssl_context=(CERT_FILE, KEY_FILE))
     else:
         print(f'🚀 Serving MP3 files on http://0.0.0.0:{PORT}/')
         app.run(host='0.0.0.0', port=PORT)

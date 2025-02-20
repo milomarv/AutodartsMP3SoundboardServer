@@ -219,6 +219,8 @@ INPUT_DIRECTORY = 'audio_input'  # Folder for unprocessed MP3s
 OUTPUT_DIRECTORY = 'audio_output'  # Folder for processed MP3s
 PORT = 8080  # The server port
 SILENCE_THRESHOLD = -50.0  # dB level for silence detection
+CERT_FILE = 'cert.pem'  # SSL certificate file
+KEY_FILE = 'key.pem'  # SSL key file
 ```
 
 You can adjust these values if needed, for example:
