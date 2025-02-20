@@ -108,7 +108,10 @@ def startup() -> None:
     print('🛠️ Preprocessing audio files...')
     for root, _, files in os.walk(INPUT_DIRECTORY):
         for file in files:
-            add_audio(os.path.join(root, file))
+            input_file_path = os.path.join(root, file)
+            output_file_path = get_file_path(input_file_path, 'output')
+            if not os.path.exists(output_file_path):
+                add_audio(input_file_path)
 
     # remove all files which are not in the input directory
     for root, _, files in os.walk(OUTPUT_DIRECTORY):
