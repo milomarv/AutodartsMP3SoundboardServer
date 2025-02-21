@@ -1,5 +1,6 @@
 import errno
-from flask import Flask
+import socket
+from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_autoindex import AutoIndex
 from pydub import AudioSegment
@@ -8,6 +9,7 @@ from watchdog.events import FileSystemEventHandler
 import os
 import time
 import threading
+import exportconfig
 
 INPUT_DIRECTORY = 'audio_input'
 OUTPUT_DIRECTORY = 'audio_output'
@@ -15,6 +17,29 @@ PORT = 8080
 SILENCE_THRESHOLD = -50.0
 CERT_FILE = 'cert.pem'
 KEY_FILE = 'key.pem'
+
+
+def get_serving_url() -> str:
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        # doesn't even have to be reachable
+        s.connect(('10.254.254.254', 1))
+        ip = s.getsockname()[0]
+    except Exception:
+        ip = '127.0.0.1'
+    finally:
+        s.close()
+
+    if os.path.exists(CERT_FILE) and os.path.exists(KEY_FILE):
+        return f'https://{ip}:{PORT}'
+    else:
+        return f'http://{ip}:{PORT}'
+
+
+serving_url = get_serving_url()
+exporttools = exportconfig.ExportConfigTools(
+    INPUT_DIRECTORY, OUTPUT_DIRECTORY, serving_url
+)
 
 if not os.path.exists(INPUT_DIRECTORY):
     os.makedirs(INPUT_DIRECTORY)
@@ -80,7 +105,7 @@ def add_audio(file_path) -> None:
         if not os.path.exists(output_file_path):
             normalized_audio.export(output_file_path, format='mp3', bitrate='192k')
             print(
-                f'🔊 Processed: {os.path.basename(file_path)} ({start_trim} milisec silence removed + normalized)'
+                f'🔊 Processed: {output_file_path} ({start_trim} milisec silence removed + normalized)'
             )
 
         if start_trim >= len(audio):
@@ -106,7 +131,7 @@ def remove_audio(file_path) -> None:
             raise
 
 
-def startup() -> None:
+def process_audio_files() -> None:
     print('🛠️ Preprocessing audio files...')
     for root, _, files in os.walk(INPUT_DIRECTORY):
         for file in files:
@@ -125,17 +150,20 @@ def startup() -> None:
 
 class AudioFileHandler(FileSystemEventHandler):
     def on_created(self, event) -> None:
+        print(f'🆕 Trigger Create: {event.src_path}')
         time.sleep(1)  # Wait for file to be written
         if not event.is_directory:
             add_audio(event.src_path)
 
     def on_moved(self, event) -> None:
+        print(f'🔄 Trigger Move: {event.src_path} -> {event.dest_path}')
         time.sleep(1)  # Wait for file to be written
         if not event.is_directory:
             remove_audio(event.src_path)
             add_audio(event.dest_path)
 
     def on_deleted(self, event) -> None:
+        print(f'🗑️ Trigger Delete: {event.src_path}')
         if not event.is_directory:
             remove_audio(event.src_path)
 
@@ -155,16 +183,23 @@ def start_watchdog() -> None:
     observer.join()
 
 
-startup()
+exporttools.generate_export_config_folder_structure()
+process_audio_files()
 
 watchdog_thread = threading.Thread(target=start_watchdog, daemon=True)
 watchdog_thread.start()
 
 
+@app.route('/export_json', methods=['GET'])
+def export_json() -> str:
+    export_json = exporttools.build_export_json()
+    return jsonify(export_json)
+
+
 if __name__ == '__main__':
     if os.path.exists(CERT_FILE) and os.path.exists(KEY_FILE):
-        print(f'🚀 Serving MP3 files on https://0.0.0.0:{PORT}/')
+        print(f'🚀 Serving MP3 files on {serving_url}')
         app.run(host='0.0.0.0', port=PORT, ssl_context=(CERT_FILE, KEY_FILE))
     else:
-        print(f'🚀 Serving MP3 files on http://0.0.0.0:{PORT}/')
+        print(f'🚀 Serving MP3 files on {serving_url}')
         app.run(host='0.0.0.0', port=PORT)
