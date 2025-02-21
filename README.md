@@ -438,6 +438,10 @@ sudo chown -R $USER:$USER .
 sudo chmod -R 755 .
 ```
 
+### Not all files are processed 🎛️
+
+If you put some files in the `audio_input` folder and they are not processed to `audio_output`, you can try to restart the script. This will trigger the processing of all files in the folder.
+
 ## Conclusion 🎯
 
 This script provides a powerful and flexible way to manage MP3 sounds for AutoDarts, solving the limitations of file uploads and cryptic URLs. By hosting files locally, you get unlimited storage, better organization, and consistent audio quality. 🚀
