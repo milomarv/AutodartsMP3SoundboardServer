@@ -126,4 +126,9 @@ class ExportConfigTools:
         for key, info in export_config.model_fields.items():
             if info.annotation in (InfoList, WinnerInfoList):
                 export_json[key] = export_json[key]['value']
+
+        logger.info('Save JSON locally')
+        with open(os.path.join(self.output_export_dir, 'export.json'), 'w') as f:
+            f.write(export_json.json())
+
         return export_json
