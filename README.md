@@ -441,6 +441,7 @@ sudo chmod -R 755 .
 ### Not all files are processed 🎛️
 
 If you put some files in the `audio_input` folder and they are not processed to `audio_output`, you can try to restart the script. This will trigger the processing of all files in the folder.
+Also the inital preprocessing is faster than on detected changes.
 
 ## Conclusion 🎯
 
