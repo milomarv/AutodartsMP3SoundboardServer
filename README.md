@@ -360,6 +360,8 @@ This part is a little bit tricky as there is no import functionality in the exte
 
    ![AutoDarts MP3 Server](./images/autodarts_tools_json_import.png)
 
+      ❗ On Raspberry Pi (Chromium Browser) or on older versions of Chrome you may not be able to import the JSON files over the `Extension Storage`. In this case skipt to **Troubleshooting** seciton at the end of the `README.md`. ❗
+
 4. **Insert the JSON Content** 📤
    - Right-click on the value field of the `soundconfig` key and select `Edit value`.
    - You can now paste the content of the JSON file into the value field and press `Enter`.
@@ -442,6 +444,58 @@ sudo chmod -R 755 .
 
 If you put some files in the `audio_input` folder and they are not processed to `audio_output`, you can try to restart the script. This will trigger the processing of all files in the folder.
 Also the inital preprocessing is faster than on detected changes.
+
+### Cannot import JSON file into the AutoDarts Tools Extension over Dev Console📤
+
+If you are not able to import the JSON file over the `Extension Storage` in the developer console, you can try to upload the files over the console directly.
+
+1. **Open the AutoDarts Tools Extension Page** 🌐
+
+   Open the AutoDarts Tools extension page in your browser:
+   ```
+   https://play.autodarts.io/tools
+   ```
+
+2. **Open Chrome Extensions in a new Tab** 📂
+
+   Open the Chrome Extensions page in a new tab:
+   ```
+   chrome://extensions/
+   ```
+   Make sure `Developer Mode` is enabled on the top right.
+
+3. **Open the Inspect Console** 🛠️
+
+   Find the **Tools for AutoDarts** extension and click on the link `Inspect views`.
+   This will open the developer console for the extension.
+   Still you are not able to import the JSON file over the `Extension Storage`.
+
+4. **Check if you can access the Extension Storage** 📦
+
+   In the console you can try to access the storage for soundsconfig by running the following command:
+   ```js
+   chrome.storage.local.get(['soundsconfig'], function(result) {
+      console.log("Retrieved soundsconfig:", result.soundsconfig);
+   });
+   ```
+   
+5. **Upload the JSON File over the Console** 📤
+
+   If you can access the storage, you can try to upload the JSON file directly over the console.
+   ```js
+      var jsonString = '<JSON CONTENT>';
+      var soundsconfig = JSON.parse(jsonString);
+      chrome.storage.local.set({ soundsconfig: soundsconfig }, function() {
+         console.log("Soundsconfig has been updated:", soundsconfig);
+      });
+   ````
+   Insert the JSON string from the `/json_export` endpoint into the `jsonString` variable.
+
+6. **Finish the Import** 🎉
+
+   Close the developer console and refresh the `https://play.autodarts.io/tools`.
+   Your soundboard should now be imported.
+
 
 ## Conclusion 🎯
 

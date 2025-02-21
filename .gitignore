@@ -3,6 +3,7 @@ audio_input/
 audio_output/
 cert.pem
 key.pem
+export.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
