@@ -335,9 +335,11 @@ This part is a little bit tricky as there is no import functionality in the exte
 
 3. **Find the Local Storage for Sounds** 📦
    - Go to the `Application` tab and select `Extension Storage` on the left side.
-   - There navigate to `Extension Storage > Tools for AutoDarts > Local`.
-   - This will open some key value pairs on the right side.
-   - Find the key `soundconfig`, this contains your sound setup.
+      - There navigate to `Extension Storage > Tools for AutoDarts > Local`.
+      - This will open some key value pairs on the right side.
+      - Find the key `soundconfig`, this contains your sound setup.
+
+      ![AutoDarts MP3 Server](./images/autodarts_mp3_server.png)
 
 4. **Insert the JSON Content** 📤
    - Right-click on the value field of the `soundconfig` key and select `Edit value`.
