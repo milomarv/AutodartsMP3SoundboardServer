@@ -1,4 +1,5 @@
 import os
+from flask import json
 from pydantic import BaseModel
 from logger import logger
 
@@ -129,6 +130,6 @@ class ExportConfigTools:
 
         logger.info('Save JSON locally')
         with open(os.path.join(self.output_export_dir, 'export.json'), 'w') as f:
-            f.write(export_json.json())
+            f.write(json.dumps(export_json, indent=4))
 
         return export_json
