@@ -427,6 +427,17 @@ Once running, the server will:
 
 ---
 
+## Troubleshooting 🛠️
+
+### Not allowed to put files in the `audio_input` folder on Linux / Raspberry🚫
+
+If you get a permission error when trying to put files in the `audio_input` folder, you can change the permissions with:
+
+```sh
+sudo chown -R $USER:$USER .
+sudo chmod -R 755 .
+```
+
 ## Conclusion 🎯
 
 This script provides a powerful and flexible way to manage MP3 sounds for AutoDarts, solving the limitations of file uploads and cryptic URLs. By hosting files locally, you get unlimited storage, better organization, and consistent audio quality. 🚀
