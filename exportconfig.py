@@ -119,7 +119,7 @@ class ExportConfigTools:
                         WinnerInfo(name=f.split('_')[0], info=u)
                         for f, u in zip(folder_files, folder_urls)
                     ]
-                    info_list.sort(key=lambda x: x.name == 'Fallback')
+                    info_list.sort(key=lambda x: x.name != 'Fallback')
                     setattr(export_config, key, WinnerInfoList(value=info_list))
                 else:
                     setattr(export_config, key, WinnerInfoList(value=[]))
