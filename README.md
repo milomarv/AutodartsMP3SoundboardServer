@@ -57,13 +57,25 @@ This maks it possible to import the soundboard to another device or restore it a
     cd AutodartsMP3SoundboardServer
     ```
 
-### Update the Repository 🔄
+### Update the Script 🔄
 - **Pull the Latest Changes** ⬇️
 
     If you have already cloned the repository, you can update it with the latest changes:
     ```sh
     git pull
     ```
+
+- **Restart the Script** 🔄
+
+    If the script is already running, stop it with `CTRL + C` and restart it after updating the repository.
+
+    - **For Autorun Windows:** 🖥️
+         - Close the script with `CTRL + C`.
+         - Restart the script with the batch file in the startup folder.
+   
+   - **For Autorun Linux / Raspberry Pi:** 🐧
+      - Restart the script with `sudo systemctl restart mp3_server.service`.
+
 
 ### Windows Installation 🖥️
 
