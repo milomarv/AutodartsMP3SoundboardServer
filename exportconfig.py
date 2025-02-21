@@ -1,5 +1,6 @@
 import os
 from pydantic import BaseModel
+from logger import logger
 
 empty_config = {'info': ''}
 
@@ -65,6 +66,7 @@ class ExportConfigTools:
         self.output_export_dir = os.path.join(self.output_dir, EXPORT_DIRECTORY)
 
     def generate_export_config_folder_structure(self) -> None:
+        logger.info('Generating Export file structure...')
         for dir in [self.input_export_dir, self.output_export_dir]:
             if not os.path.exists(dir):
                 os.makedirs(dir)
@@ -84,6 +86,7 @@ class ExportConfigTools:
                     f.write(info.annotation.__str__(key))
 
     def build_export_json(self) -> dict:
+        logger.info('Building Export JSON...')
         export_config = ExportConfig()
         for key, info in ExportConfig.model_fields.items():
             if info.annotation == bool:

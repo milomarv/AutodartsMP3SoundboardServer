@@ -65,6 +65,13 @@ This maks it possible to import the soundboard to another device or restore it a
     git pull
     ```
 
+- **Install New Dependencies** 📦
+
+    If new dependencies are added to the `requirements.txt`, install them with:
+    ```sh
+    pip install -r requirements.txt
+    ```
+
 - **Restart the Script** 🔄
 
     If the script is already running, stop it with `CTRL + C` and restart it after updating the repository.

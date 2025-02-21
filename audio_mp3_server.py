@@ -10,6 +10,7 @@ import os
 import time
 import threading
 import exportconfig
+from logger import logger
 
 INPUT_DIRECTORY = 'audio_input'
 OUTPUT_DIRECTORY = 'audio_output'
@@ -104,17 +105,17 @@ def add_audio(file_path) -> None:
         # Save to output directory
         if not os.path.exists(output_file_path):
             normalized_audio.export(output_file_path, format='mp3', bitrate='192k')
-            print(
-                f'🔊 Processed: {output_file_path} ({start_trim} milisec silence removed + normalized)'
+            logger.info(
+                f'Processed: {output_file_path} ({start_trim} milisec silence removed + normalized)'
             )
 
         if start_trim >= len(audio):
-            print(f'⚠️ The entire audio is detected silent: {file_path}')
+            logger.warning(f'The entire audio is detected silent: {file_path}')
             remove_audio(output_file_path)
     except OSError:
         pass
     except Exception as e:
-        print(f'⚠️ Error processing {file_path}: {e}')
+        logger.error(f'Error processing {file_path}: {e}')
 
 
 def remove_audio(file_path) -> None:
@@ -125,14 +126,14 @@ def remove_audio(file_path) -> None:
         output_file_path = get_file_path(file_path, 'output')
         if os.path.exists(output_file_path):
             os.remove(output_file_path)
-            print(f'🗑️ Removed: {os.path.basename(file_path)}')
+            logger.info(f'Removed: {os.path.basename(file_path)}')
     except OSError as e:
         if e.errno != errno.ENOENT:
             raise
 
 
 def process_audio_files() -> None:
-    print('🛠️ Preprocessing audio files...')
+    logger.info('Preprocessing audio files...')
     for root, _, files in os.walk(INPUT_DIRECTORY):
         for file in files:
             input_file_path = os.path.join(root, file)
@@ -150,20 +151,20 @@ def process_audio_files() -> None:
 
 class AudioFileHandler(FileSystemEventHandler):
     def on_created(self, event) -> None:
-        print(f'🆕 Trigger Create: {event.src_path}')
+        logger.info(f'Trigger Create: {event.src_path}')
         time.sleep(1)  # Wait for file to be written
         if not event.is_directory:
             add_audio(event.src_path)
 
     def on_moved(self, event) -> None:
-        print(f'🔄 Trigger Move: {event.src_path} -> {event.dest_path}')
+        logger.info(f'Trigger Move: {event.src_path} -> {event.dest_path}')
         time.sleep(1)  # Wait for file to be written
         if not event.is_directory:
             remove_audio(event.src_path)
             add_audio(event.dest_path)
 
     def on_deleted(self, event) -> None:
-        print(f'🗑️ Trigger Delete: {event.src_path}')
+        logger.info(f'Trigger Delete: {event.src_path}')
         if not event.is_directory:
             remove_audio(event.src_path)
 
@@ -173,7 +174,7 @@ def start_watchdog() -> None:
     event_handler = AudioFileHandler()
     observer.schedule(event_handler, INPUT_DIRECTORY, recursive=True)
     observer.start()
-    print('👀 Watching for file changes in:', INPUT_DIRECTORY)
+    logger.info(f'Watching for file changes in: {INPUT_DIRECTORY}')
 
     try:
         while True:
@@ -198,8 +199,8 @@ def export_json() -> str:
 
 if __name__ == '__main__':
     if os.path.exists(CERT_FILE) and os.path.exists(KEY_FILE):
-        print(f'🚀 Serving MP3 files on {serving_url}')
+        logger.info(f'Serving MP3 files on {serving_url}')
         app.run(host='0.0.0.0', port=PORT, ssl_context=(CERT_FILE, KEY_FILE))
     else:
-        print(f'🚀 Serving MP3 files on {serving_url}')
+        logger.info(f'Serving MP3 files on {serving_url}')
         app.run(host='0.0.0.0', port=PORT)
