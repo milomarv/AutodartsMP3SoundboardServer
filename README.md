@@ -496,6 +496,15 @@ If you are not able to import the JSON file over the `Extension Storage` in the 
    Close the developer console and refresh the `https://play.autodarts.io/tools`.
    Your soundboard should now be imported.
 
+### Runtime Warning on Windows and no files ar processed 🚫
+When you start the script on Windows and you get the following Runtimewarning:
+```sh
+Couldn't find ffmpeg or avconv - defaulting to ffmpeg, but may not work
+```
+This means that the script is not able to find the ffmpeg executable. You can fix this by adding the path to the ffmpeg executable to the system PATH.
+
+To fix it you can look at this [Stackoverflow Post](https://stackoverflow.com/questions/74651215/couldnt-find-ffmpeg-or-avconv-defaulting-to-ffmpeg-but-may-not-work-runti).
+
 
 ## Conclusion 🎯
 

@@ -34,7 +34,7 @@ def get_serving_url() -> str:
     if os.path.exists(CERT_FILE) and os.path.exists(KEY_FILE):
         return f'https://{ip}:{PORT}'
     else:
-        return f'http://{ip}:{PORT}'
+        return f'http://localhost:{PORT}'
 
 
 serving_url = get_serving_url()
