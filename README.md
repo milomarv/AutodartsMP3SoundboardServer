@@ -372,6 +372,66 @@ This part is a little bit tricky as there is no import functionality in the exte
 
 ---
 
+## Randomizer Functionality 🎲
+
+The script provides a randomizer functionality to play random sounds from a specific folder. This can be useful for adding variety to your soundboard, especially for sounds that are not directly linked to a specific event.
+
+### Use the Randomizer 🔗
+
+To play a random sound from a specific folder, you can access the following URL in your browser:
+
+```sh
+http://<IP_ADDRESS>:8080/random/<FOLDER_NAME>
+```
+
+This will redirect you to a random MP3 file from the specified folder. Replace `<IP_ADDRESS>` with the IP address of the server and `<FOLDER_NAME>` with the name of the folder containing the MP3 files.
+
+---
+
+## Tampermonkey Audio Script 🎧
+
+I also created a Tampermonkey script that allows you to play sounds without the need to upload them to the AutoDarts Tools extension. This workflow is easier than handling the export_json and import process. The script will just use the randomizer functionality to play the sounds. This means just put your files in the following folders:
+
+- `tampermonkey/180` - For hitting 180 or 171 score
+- `tampermonkey/bull` - For hitting single bull or bullseye
+- `tampermonkey/bust` - For busting
+- `tampermonkey/heckscheibenwischer` - German for "rear windshield wiper" means score of 29 with the fields 3, 7 and 19
+- `tampermonkey/highscore` - For hitting a score of 80 and above
+- `tampermonkey/hightriple` - For hitting a triple bigger equal 15
+- `tampermonkey/miss` - For missing the board
+- `tampermonkey/scheibenwischer` - German for "windshield wiper" means score of 26 with the fields 1, 5 and 20
+- `tampermonkey/triple` - For hitting a triple lower than 15
+- `tampermonkey/win` - For finishing the game
+
+### Installation 🛠️
+
+1. **Install Tampermonkey** 🐒
+
+   - Install the Tampermonkey extension for your browser:
+     - [Tampermonkey for Chrome](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)
+     - [Tampermonkey for Firefox](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/)
+     - [Tampermonkey for Edge](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd)
+
+2. **Install the Script** 📄
+
+   - Create a new script in Tampermonkey.
+   - Copy the content of the `tampermonkey_audio_script.js` file into the script.
+   - Save the script.
+
+3. **Use the Script** 🎧
+
+   - Open https://play.autodarts.io/
+   - Click on the Tampermonkey icon in the browser.
+   - Enable the script for the AutoDarts page.
+   - Reload the page.
+
+4. **Debugging** 🐞
+
+   - If the script is not working, check the console for errors.
+   - Right-click on the page, select `Inspect`, and go to the `Console` tab.
+
+---
+
 ## How the Code Works 🔍
 
 ### MP3 Server Constants 🔢

@@ -1,6 +1,7 @@
 import errno
 import socket
-from flask import Flask, jsonify
+import random
+from flask import Flask, jsonify, redirect, abort
 from flask_cors import CORS
 from flask_autoindex import AutoIndex
 from pydub import AudioSegment
@@ -195,6 +196,21 @@ watchdog_thread.start()
 def export_json() -> str:
     export_json = exporttools.build_export_json()
     return jsonify(export_json)
+
+
+@app.route('/random/<path:folder>', methods=['GET'])
+def random_sound(folder: str) -> str:
+    folder_path = os.path.join(OUTPUT_DIRECTORY, folder)
+    if not os.path.exists(folder_path):
+        abort(404, description=f"Folder '{folder}' not found")
+
+    sound_files = [f for f in os.listdir(folder_path) if f.endswith('.mp3')]
+    if not sound_files:
+        abort(404, description=f"No MP3 files found in folder '{folder}'")
+
+    random.seed(time.time())  # Seed the random number generator with the current time
+    random_file = random.choice(sound_files)
+    return redirect(f'{serving_url}/{folder}/{random_file}')
 
 
 if __name__ == '__main__':
