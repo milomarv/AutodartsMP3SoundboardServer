@@ -208,8 +208,8 @@ def random_sound(folder: str) -> str:
     if not sound_files:
         abort(404, description=f"No MP3 files found in folder '{folder}'")
 
-    random.seed(time.time())  # Seed the random number generator with the current time
-    random_file = random.choice(sound_files)
+    random.shuffle(sound_files)
+    random_file = sound_files[0]
     return redirect(f'{serving_url}/{folder}/{random_file}')
 
 
