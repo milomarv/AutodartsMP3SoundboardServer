@@ -11,13 +11,61 @@
 (function () {
     'use strict';
 
-    const baseURL = "https://192.168.69.25:8080/random/tampermonkey";
+    const baseURL = "https://192.168.69.144:8080/random/tampermonkey";
+    const callerBaseURL = "https://192.168.69.144:8080/tampermonkey/callers/schwitzerdutsch";
+    const fadeDuration = 1000;
     let lastLog = "";
+    let currentlyPlayingAudio = null;
+    let pausedAudios = [];
 
-    function playSound(path) {
-        const url = `${baseURL}${path}`;
-        const audio = new Audio(url);
+    function isAudioNearEnd(audio, threshold = fadeDuration) {
+        return audio.duration - audio.currentTime < threshold / 1000;
+    }
+
+    function isAudioNearStart(audio, threshold = fadeDuration) {
+        return audio.currentTime < threshold / 1000;
+    }
+
+    function fadeOut(audio, duration = fadeDuration) {
+        const step = 0.05;
+        const interval = duration / (1 / step);
+        const fadeInterval = setInterval(() => {
+            if (audio.volume > step) {
+                audio.volume -= step;
+            } else {
+                audio.volume = 0;
+                audio.pause();
+                clearInterval(fadeInterval);
+            }
+        }, interval);
+    }
+
+    function fadeIn(audio, duration = fadeDuration) {
+        const step = 0.05;
+        const interval = duration / (1 / step);
+        audio.volume = 0;
         audio.play().catch(err => console.warn("Failed to play sound:", err));
+        const fadeInterval = setInterval(() => {
+            if (audio.volume < 1 - step) {
+                audio.volume += step;
+            } else {
+                audio.volume = 1;
+                clearInterval(fadeInterval);
+            }
+        }, interval);
+    }
+
+    function playSound(url) {
+        if (currentlyPlayingAudio) {
+            fadeOut(currentlyPlayingAudio);
+        }
+        if (currentlyPlayingAudio && !currentlyPlayingAudio.ended && !isAudioNearEnd(currentlyPlayingAudio)) {
+            pausedAudios.push(currentlyPlayingAudio);
+        }
+
+        currentlyPlayingAudio = new Audio(url);
+        currentlyPlayingAudio.play().catch(err => console.warn("Failed to play sound:", err));
+        return currentlyPlayingAudio;
     }
 
     function isHighTriple(dart) {
@@ -48,31 +96,46 @@
     }
 
 
-    function checkForSounds(d1, d2, d3, scoreText, isWin) {
+    function callScore(d1, d2, d3, scoreText, isWin) {
         const numericScore = parseInt(scoreText, 10);
+
+        if (d3 && !(scoreText == "BUST")) {
+            console.log("🎯 Call Score ");
+            var callerSound = playSound(`${callerBaseURL}/${scoreText}.mp3`);
+
+            callerSound.onended = () => {
+                detectAudios(d1, d2, d3, scoreText, isWin, numericScore);
+            };
+        } else {
+            detectAudios(d1, d2, d3, scoreText, isWin, numericScore);
+        }
+    }
+
+    function detectAudios(d1, d2, d3, scoreText, isWin, numericScore) {
         if (isWin) {
             console.log("🏆 Game won!");
-            playSound("/win");
+            playSound(`${baseURL}/win`);
+            pausedAudios = [];
             return;
         } else if (scoreText === "BUST") {
             console.log("💥 Bust!");
-            playSound("/bust");
+            playSound(`${baseURL}/bust`);
             return;
         } else if (scoreText === "180" || scoreText === "171") {
             console.log("🔥 180!");
-            playSound("/180");
+            playSound(`${baseURL}/180`);
             return;
         } else if (isClassic26(d1, d2, d3, scoreText)) {
             console.log("🔥 Classic 26!");
-            playSound("/scheibenwischer");
+            playSound(`${baseURL}/scheibenwischer`);
             return;
         } else if (isClassic29(d1, d2, d3, scoreText)) {
             console.log("🔥 Classic 29!");
-            playSound("/heckscheibenwischer");
+            playSound(`${baseURL}/scheibenwischer`);
             return;
-        } else if (!isNaN(numericScore) && numericScore > 80) {
+        } else if (!isNaN(numericScore) && numericScore >= 80) {
             console.log("💥 Big score! >", numericScore);
-            playSound("/highscore");
+            playSound(`${baseURL}/highscore`);
             return;
         }
 
@@ -80,16 +143,16 @@
 
         if (isHighTriple(lastDart)) {
             console.log("🔥 High Triple!");
-            playSound("/hightriple");
+            playSound(`${baseURL}/hightriple`);
         } else if (isLowTriple(lastDart)) {
             console.log("🔥 Low Triple!");
-            playSound("/triple");
+            playSound(`${baseURL}/triple`);
         } else if (lastDart.startsWith("M")) {
             console.log("❌ Miss!");
-            playSound("/miss");
+            playSound(`${baseURL}/miss`);
         } else if (lastDart === "BULL" || lastDart === "25") {
             console.log("🔥 Bullseye!");
-            playSound("/bull");
+            playSound(`${baseURL}/bull`);
         }
     }
 
@@ -117,7 +180,16 @@
         console.log("💯 Total Turn Score:", score || "—");
         console.log("———————————————");
 
-        checkForSounds(dart1, dart2, dart3, score, isWin);
+        callScore(dart1, dart2, dart3, score, isWin);
 
+    }, 300);
+
+    setInterval(() => {
+        if (pausedAudios.length && currentlyPlayingAudio.ended) {
+            currentlyPlayingAudio = pausedAudios.pop();
+            if (!currentlyPlayingAudio.ended && !isAudioNearEnd(currentlyPlayingAudio) && !isAudioNearStart(currentlyPlayingAudio)) {
+                fadeIn(currentlyPlayingAudio);
+            }
+        }
     }, 300);
 })();
