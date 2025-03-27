@@ -13,17 +13,18 @@
 
     const baseURL = "https://192.168.69.144:8080/random/tampermonkey";
     const callerBaseURL = "https://192.168.69.144:8080/tampermonkey/callers/schwitzerdutsch";
-    const fadeDuration = 1000;
+    const readySound = "https://192.168.69.144:8080/tampermonkey/notification-2-269292.mp3"
+    const fadeDuration = 500;
     let lastLog = "";
     let currentlyPlayingAudio = null;
     let pausedAudios = [];
 
     function isAudioNearEnd(audio, threshold = fadeDuration) {
-        return audio.duration - audio.currentTime < threshold / 1000;
+        return audio.duration - audio.currentTime < threshold / fadeDuration;
     }
 
     function isAudioNearStart(audio, threshold = fadeDuration) {
-        return audio.currentTime < threshold / 1000;
+        return audio.currentTime < threshold / fadeDuration;
     }
 
     function fadeOut(audio, duration = fadeDuration) {
@@ -133,9 +134,13 @@
             console.log("🔥 Classic 29!");
             playSound(`${baseURL}/scheibenwischer`);
             return;
-        } else if (!isNaN(numericScore) && numericScore >= 80) {
+        } else if (!isNaN(numericScore) && numericScore >= 80 && d3) {
             console.log("💥 Big score! >", numericScore);
             playSound(`${baseURL}/highscore`);
+            return;
+        } else if (!d1 && !d2 && !d3) {
+            console.log("🎯 Ready!");
+            playSound(readySound);
             return;
         }
 
@@ -185,10 +190,15 @@
     }, 300);
 
     setInterval(() => {
-        if (pausedAudios.length && currentlyPlayingAudio.ended) {
-            currentlyPlayingAudio = pausedAudios.pop();
-            if (!currentlyPlayingAudio.ended && !isAudioNearEnd(currentlyPlayingAudio) && !isAudioNearStart(currentlyPlayingAudio)) {
-                fadeIn(currentlyPlayingAudio);
+        if (currentlyPlayingAudio) {
+            if (!currentlyPlayingAudio.ended && currentlyPlayingAudio.paused) {
+                currentlyPlayingAudio.play().catch(err => console.warn("Failed to play sound:", err));
+            }
+            if (pausedAudios.length && currentlyPlayingAudio.ended) {
+                currentlyPlayingAudio = pausedAudios.pop();
+                if (!currentlyPlayingAudio.ended && !isAudioNearEnd(currentlyPlayingAudio) && !isAudioNearStart(currentlyPlayingAudio)) {
+                    fadeIn(currentlyPlayingAudio);
+                }
             }
         }
     }, 300);
