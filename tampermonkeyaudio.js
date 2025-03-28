@@ -11,9 +11,9 @@
 (function () {
     'use strict';
 
-    const baseURL = "https://192.168.69.144:8080/random/tampermonkey";
-    const callerBaseURL = "https://192.168.69.144:8080/tampermonkey/callers/schwitzerdutsch";
-    const readySound = "https://192.168.69.144:8080/tampermonkey/notification-2-269292.mp3"
+    const baseURL = "https://192.168.69.25:8080/random/tampermonkey";
+    const callerBaseURL = "https://192.168.69.25:8080/tampermonkey/callers/schwitzerdutsch";
+    const readySound = "https://192.168.69.25:8080/tampermonkey/notification-2-269292.mp3"
     const fadeDuration = 500;
     let lastLog = "";
     let currentlyPlayingAudio = null;
@@ -24,7 +24,7 @@
     }
 
     function isAudioNearStart(audio, threshold = fadeDuration) {
-        return audio.currentTime < threshold / fadeDuration;
+        return audio.currentTime < threshold / fadeDuration / 2;
     }
 
     function fadeOut(audio, duration = fadeDuration) {
